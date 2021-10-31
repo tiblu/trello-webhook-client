@@ -9,11 +9,14 @@ logger.level = process.env.LOGGER_LEVEL || log4js.levels.DEBUG;
 const marked = require('marked');
 const fs = require('fs').promises;
 const os = require('os');
+const request = require('superagent');
 
 app.use(express.json());
 app.use(require('./libs/middleware/response'));
 
 const authApiKey = require('./libs/middleware/authApiKey');
+
+const TRELLO_API_PREFIX = 'https://api.trello.com/1/';
 
 app.get('/', async function (req, res) {
     const file = await fs.readFile(`${__dirname}/README.md`, 'utf8');
@@ -21,7 +24,7 @@ app.get('/', async function (req, res) {
 });
 
 /**
- * Authorization with client API key in "clientApiKey" parameter.
+ * Authorization with client API key in "apiKey" parameter.
  *
  * NOTE: GET for ease of use.
  *
@@ -38,11 +41,11 @@ app.get('/api/trello/webhooks/register', authApiKey, async function (req, res) {
         return res.badRequest('Missing one or more required parameters. Required parameters are trelloApiKey, trelloApiToken, description, idModel.', 1);
     }
 
-    res.ok({});
+    res.ok();
 });
 
 /**
- * Authorization with client API key in "clientApiKey" parameter.
+ * Authorization with client API key in "apiKey" parameter.
  *
  * NOTE: GET for ease of use.
  *
@@ -56,7 +59,7 @@ app.get('/api/trello/webhooks/delete/:id', authApiKey, async function (req, res)
         return res.badRequest('Missing one or more required parameters.', 1)
     }
 
-    res.ok({});
+    res.ok();
 });
 
 /**
@@ -65,7 +68,32 @@ app.get('/api/trello/webhooks/delete/:id', authApiKey, async function (req, res)
 app.post('/api/trello/webhooks/callback', async function (req, res) {
     logger.debug(req.method, req.path, 'req.body', os.EOL + JSON.stringify(req.body, null, 2));
 
-    res.status(200).json({});
+    res.ok();
+});
+
+/**
+ * Proxy all GET requests through to Trello API and return whatever they respond
+ *
+ * @see https://developer.atlassian.com/cloud/trello/guides/rest-api/api-introduction/
+ */
+app.get('/api/trello/*', authApiKey, async function (req, res) {
+    const path = TRELLO_API_PREFIX + req.path.replace('/api/trello/', '');
+    console.error('asdsa', path);
+
+    const apiRes = await request
+        .get(path)
+        .query(req.query);
+
+    if (apiRes.status < 400) {
+        return res.ok(apiRes.body);
+    } else {
+        return res
+            .status(apiRes.status)
+            .json({
+                code: res.status,
+                message: res.text
+            });
+    }
 });
 
 app.use(require('./libs/middleware/error'));

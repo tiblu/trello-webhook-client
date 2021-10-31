@@ -53,9 +53,9 @@ suite('App', function () {
      */
     suite('GET /api/trello/webhooks/register', function () {
         setup(async function () {
-            process.env.API_KEY = 'TEST_API_KEY';
-            process.env.TRELLO_APIKEY = 'TEST_TRELLO_APIKEY';
-            process.env.TRELLO_TRELLO_APITOKEN = 'TEST_TRELLO_APIKEY';
+            process.env.API_KEY = process.env.API_KEY || 'TEST_API_KEY';
+            process.env.TRELLO_APIKEY = process.env.TRELLO_APIKEY || 'TEST_TRELLO_APIKEY';
+            process.env.TRELLO_APITOKEN = process.env.TRELLO_APITOKEN || 'TRELLO_APITOKEN';
         });
 
         test('Success', async function () {
@@ -101,13 +101,13 @@ suite('App', function () {
             assert.deepEqual(resBody, resbodyExpected);
         });
     });
-    
-    suite('GET /api/trello/webhooks/delete/:id', function() {
+
+    suite('GET /api/trello/webhooks/delete/:id', function () {
 
         setup(async function () {
-            process.env.API_KEY = 'TEST_API_KEY';
-            process.env.TRELLO_APIKEY = 'TEST_TRELLO_APIKEY';
-            process.env.TRELLO_TRELLO_APITOKEN = 'TEST_TRELLO_APIKEY';
+            process.env.API_KEY = process.env.API_KEY || 'TEST_API_KEY';
+            process.env.TRELLO_APIKEY = process.env.TRELLO_APIKEY || 'TEST_TRELLO_APIKEY';
+            process.env.TRELLO_APITOKEN = process.env.TRELLO_APITOKEN || 'TRELLO_APITOKEN';
         });
 
         test('Success', async function () {
@@ -143,8 +143,39 @@ suite('App', function () {
                 .expect('Content-Type', /json/)
                 .expect(200);
 
-            assert.deepEqual(res.body, {});
+            const resExpected = {
+                status: {
+                    code: 20000
+                }
+            };
+
+            assert.deepEqual(res.body, resExpected);
         });
+
+    });
+
+    suite('GET /api/trello/*', function () {
+
+        // Skipped by default, can only be tested with real credentials from env.
+        if (process.env.API_KEY && process.env.TRELLO_APIKEY && process.env.TRELLO_APITOKEN) {
+            test('Success - 200', async function () {
+                const res = await request(app)
+                    .get('/api/trello/members/me/boards')
+                    .query({
+                        apiKey: process.env.API_KEY,
+                        key: process.env.TRELLO_APIKEY,
+                        token: process.env.TRELLO_APITOKEN
+                    })
+                    .expect('Content-Type', /json/)
+                    .expect(200);
+
+                logger.debug(JSON.stringify(res.body, null, 2));
+            });
+        } else {
+            test.skip('Success - 200', function () {
+                // SKIP
+            });
+        }
 
     });
 
