@@ -78,11 +78,18 @@ app.post('/api/trello/webhooks/callback', async function (req, res) {
  */
 app.get('/api/trello/*', authApiKey, async function (req, res) {
     const path = TRELLO_API_PREFIX + req.path.replace('/api/trello/', '');
-    console.error('asdsa', path);
+    const params = Object.assign(
+        {},
+        {
+            key: process.env.TRELLO_APIKEY,
+            token: process.env.TRELLO_APITOKEN
+        },
+        req.query
+    );
 
     const apiRes = await request
         .get(path)
-        .query(req.query);
+        .query(params);
 
     if (apiRes.status < 400) {
         return res.ok(apiRes.body);
