@@ -29,13 +29,13 @@ app.get('/', async function (req, res) {
  * @see https://developer.atlassian.com/cloud/trello/rest/api-group-webhooks/#api-webhooks-post
  */
 app.get('/api/trello/webhooks/register', authApiKey, async function (req, res) {
-    const apiKey = req.query.apiKey || process.env.TRELLO_APIKEY;
-    const apiToken = req.query.apiToken || process.env.TRELLO_APITOKEN;
+    const trelloApiKey = req.query.trelloApiKey || process.env.TRELLO_APIKEY;
+    const trelloApiToken = req.query.trelloApiToken || process.env.TRELLO_APITOKEN;
     const description = req.query.description;
     const idModel = req.query.idModel;
 
-    if (!apiKey || !apiToken || !description || !idModel) {
-        return res.badRequest('Missing one or more required parameters.', 1)
+    if (!trelloApiKey || !trelloApiToken || !description || !idModel) {
+        return res.badRequest('Missing one or more required parameters. Required parameters are trelloApiKey, trelloApiToken, description, idModel.', 1);
     }
 
     res.ok({});
