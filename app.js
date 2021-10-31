@@ -75,6 +75,7 @@ app.post('/api/trello/webhooks/callback', async function (req, res) {
  * Proxy all GET requests through to Trello API and return whatever they respond
  *
  * @see https://developer.atlassian.com/cloud/trello/guides/rest-api/api-introduction/
+ * @see https://developer.atlassian.com/cloud/trello/rest/api-group-actions/
  */
 app.get('/api/trello/*', authApiKey, async function (req, res) {
     const path = TRELLO_API_PREFIX + req.path.replace('/api/trello/', '');
