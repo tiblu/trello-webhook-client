@@ -8,7 +8,6 @@ logger.level = process.env.LOGGER_LEVEL || log4js.levels.DEBUG;
 
 suite('App', function () {
 
-
     suite('GET /', async function () {
 
         test('Success - 200 - return README.md as HTML', async function () {
@@ -29,11 +28,21 @@ suite('App', function () {
 
     });
 
-    suite('POST /api/trello/webhookCallback', async function () {
+    /**
+     * @see https://developer.atlassian.com/cloud/trello/guides/rest-api/webhooks/
+     */
+    suite('GET /api/trello/webhooks/register?apikey&apitoken&description&idModel', function() {
+
+    });
+
+    /**
+     * @see https://developer.atlassian.com/cloud/trello/guides/rest-api/webhooks/
+     */
+    suite('POST /api/trello/webhooks/callback', async function () {
 
         test('Success - 200', async function () {
             const res = await request(app)
-                .post('/api/trello/webhookCallback')
+                .post('/api/trello/webhooks/callback')
                 .send({name: 'tiblu'})
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
