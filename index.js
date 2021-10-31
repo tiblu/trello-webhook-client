@@ -10,6 +10,8 @@ logger.level = process.env.LOGGER_LEVEL || log4js.levels.DEBUG;
 const marked = require('marked');
 const fs = require('fs').promises;
 
+app.use(express.json());
+
 app.get('/', async function (req, res) {
     const file = await fs.readFile(`${__dirname}/README.md`, 'utf8');
     res.send(marked(file.toString()));
@@ -22,7 +24,6 @@ app.get('/api', async function (req, res) {
 // In development host === null binds 0.0.0.0, thus open on all interfaces. In useful in dev so that app running in Vbox is visible to the host machine.
 const host = app.get('env') === 'development' ? null : process.env.HOST || 'localhost';
 const port = process.env.PORT || 3000;
-
 
 // @see https://expressjs.com/en/guide/behind-proxies.html
 let trustProxy = false;
@@ -37,5 +38,5 @@ if (envTrustProxy) {
 app.set('trust proxy', trustProxy);
 
 const serverHttp = http.createServer(app).listen(port, host, function () {
-    logger.debug(`Express HTTP server listening on port ${serverHttp.address().port}. Trust proxy: ${trustProxy}.`);
+    logger.debug(`Express HTTP server listening on port ${serverHttp.address().port}. Env: ${app.get('env')}. Host: ${host}. Trust proxy: ${trustProxy}.`);
 });
