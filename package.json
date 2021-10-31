@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "NODE_ENV=development node ./index.js",
-    "test": "NODE_ENV=test LOGGER_LEVEL=info ./node_modules/.bin/mocha --expose-gc --async-only --check-leaks --trace-deprecation --reporter spec --no-exit --recursive --ui tdd test/"
+    "test": "NODE_ENV=test LOGGER_LEVEL=info ./node_modules/.bin/mocha --expose-gc --async-only --check-leaks --trace-deprecation --reporter spec --no-exit --recursive --ui tdd test/",
+    "eslint": "./node_modules/.bin/eslint ."
   },
   "dependencies": {
     "express": "^4.17.1",
@@ -15,6 +16,7 @@
   },
   "devDependencies": {
     "chai": "^4.3.4",
+    "eslint": "^8.1.0",
     "mocha": "^9.1.3",
     "supertest": "^6.1.6"
   },

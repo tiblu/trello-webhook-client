@@ -6,6 +6,25 @@ const log4js = require('log4js');
 const logger = log4js.getLogger();
 logger.level = process.env.LOGGER_LEVEL || log4js.levels.DEBUG;
 
+const trelloWebhooksRegister = async function (params, expectedHttpCode) {
+    const path = '/api/trello/webhooks/register';
+
+    return request(app)
+        .get(path)
+        .expect('Content-Type', /json/)
+        .expect(expectedHttpCode);
+};
+
+const trelloWebhooksDelete = async function (trelloWebhookId, expectedHttpCode) {
+    const path = '/api/trello/webhooks/delete/:id'
+        .replace(':id', trelloWebhookId);
+
+    return request(app)
+        .get(path)
+        .expect('Content-Type', /json/)
+        .expect(expectedHttpCode);
+};
+
 suite('App', function () {
 
     suite('GET /', async function () {
@@ -31,7 +50,53 @@ suite('App', function () {
     /**
      * @see https://developer.atlassian.com/cloud/trello/guides/rest-api/webhooks/
      */
-    suite('GET /api/trello/webhooks/register?apikey&apitoken&description&idModel', function() {
+    suite('GET /api/trello/webhooks/register', function () {
+        test('Success', async function () {
+            throw new Error('Implement');
+        });
+
+        test('Fail - 50001 - invalid server configuration, no API_KEY set', async function () {
+            const resBody = (await trelloWebhooksRegister({}, 500)).body;
+            const resbodyExpected = {
+                status: {
+                    code: 50001,
+                    message: 'Invalid server configuration - missing API_KEY'
+                }
+            };
+
+            assert.deepEqual(resBody, resbodyExpected);
+        });
+
+        test('Fail - 40101 - invalid API key provided (apiKey)', async function () {
+            const resBody = (await trelloWebhooksRegister({}, 401)).body;
+            const resbodyExpected = {
+                status: {
+                    code: 40101,
+                    message: 'Invalid API key (apiKey) provided.'
+                }
+            };
+
+            assert.deepEqual(resBody, resbodyExpected);
+        });
+    });
+    
+    suite('GET /api/trello/webhooks/delete/:id', function() {
+
+        test('Success', async function () {
+            throw new Error('Implement');
+        });
+
+        test('Fail - 50001 - invalid server configuration, no API_KEY set', async function () {
+            const resBody = (await trelloWebhooksDelete('irrelevant', 500)).body;
+            const resbodyExpected = {
+                status: {
+                    code: 50001,
+                    message: 'Invalid server configuration - missing API_KEY'
+                }
+            };
+
+            assert.deepEqual(resBody, resbodyExpected);
+        });
 
     });
 

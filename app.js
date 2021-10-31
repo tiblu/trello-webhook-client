@@ -23,6 +23,8 @@ app.get('/', async function (req, res) {
 /**
  * Authorization with client API key in "clientApiKey" parameter.
  *
+ * NOTE: GET for ease of use.
+ *
  * @see https://developer.atlassian.com/cloud/trello/guides/rest-api/webhooks/
  * @see https://developer.atlassian.com/cloud/trello/rest/api-group-webhooks/#api-webhooks-post
  */
@@ -42,16 +44,15 @@ app.get('/api/trello/webhooks/register', authApiKey, async function (req, res) {
 /**
  * Authorization with client API key in "clientApiKey" parameter.
  *
+ * NOTE: GET for ease of use.
+ *
  * @see https://developer.atlassian.com/cloud/trello/guides/rest-api/webhooks/
  * @see https://developer.atlassian.com/cloud/trello/rest/api-group-webhooks/#api-webhooks-post
  */
-app.get('/api/trello/webhooks/delete', authApiKey, async function (req, res) {
-    const trelloApiKey = req.query.trelloApiKey || process.env.TRELLO_API_KEY;
-    const trelloApiToken = req.query.trelloApiToken || process.env.TRELLO_API_TOKEN;
-    const description = req.query.description;
-    const idModel = req.query.idModel;
+app.get('/api/trello/webhooks/delete/:id', authApiKey, async function (req, res) {
+    const trelloWebhookId = req.params.id;
 
-    if (!trelloApiKey || !trelloApiToken || !description || !idModel) {
+    if (!trelloWebhookId) {
         return res.badRequest('Missing one or more required parameters.', 1)
     }
 

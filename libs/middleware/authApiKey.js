@@ -4,7 +4,7 @@
  * Middleware to check authorization with API key (X-API-KEY header) OR "apiKey" query parameter
  */
 module.exports = function (req, res, next) {
-    const apiKey = req.headers['x-api-key'] || req.query.clientApiKey;
+    const apiKey = req.headers['x-api-key'] || req.query.apiKey;
 
     const configClientApiKey = process.env.API_KEY; // API key used to authorize calling this endpoint
     if (!configClientApiKey) {
@@ -14,6 +14,6 @@ module.exports = function (req, res, next) {
     if (apiKey === configClientApiKey) {
         return next();
     } else {
-        return res.unauthorised('Invalid clientApiKey provided.', 1);
+        return res.unauthorised('Invalid API key (apiKey) provided.', 1);
     }
 };
