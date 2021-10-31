@@ -54,8 +54,8 @@ suite('App', function () {
     suite('GET /api/trello/webhooks/register', function () {
         setup(async function () {
             process.env.API_KEY = process.env.API_KEY || 'TEST_API_KEY';
-            process.env.TRELLO_APIKEY = process.env.TRELLO_APIKEY || 'TEST_TRELLO_APIKEY';
-            process.env.TRELLO_APITOKEN = process.env.TRELLO_APITOKEN || 'TRELLO_APITOKEN';
+            process.env.TRELLO_API_KEY = process.env.TRELLO_API_KEY || 'TEST_TRELLO_API_KEY';
+            process.env.TRELLO_API_TOKEN = process.env.TRELLO_API_TOKEN || 'TRELLO_API_TOKEN';
         });
 
         test('Success', async function () {
@@ -106,8 +106,8 @@ suite('App', function () {
 
         setup(async function () {
             process.env.API_KEY = process.env.API_KEY || 'TEST_API_KEY';
-            process.env.TRELLO_APIKEY = process.env.TRELLO_APIKEY || 'TEST_TRELLO_APIKEY';
-            process.env.TRELLO_APITOKEN = process.env.TRELLO_APITOKEN || 'TRELLO_APITOKEN';
+            process.env.TRELLO_API_KEY = process.env.TRELLO_API_KEY || 'TEST_TRELLO_API_KEY';
+            process.env.TRELLO_API_TOKEN = process.env.TRELLO_API_TOKEN || 'TRELLO_API_TOKEN';
         });
 
         test('Success', async function () {
@@ -157,14 +157,14 @@ suite('App', function () {
     suite('GET /api/trello/*', function () {
 
         // Skipped by default, can only be tested with real credentials from env.
-        if (process.env.API_KEY && process.env.TRELLO_APIKEY && process.env.TRELLO_APITOKEN) {
+        if (process.env.API_KEY && process.env.TRELLO_API_KEY && process.env.TRELLO_API_TOKEN) {
             test('Success - 200', async function () {
                 const res = await request(app)
                     .get('/api/trello/members/me/boards')
                     .query({
                         apiKey: process.env.API_KEY,
-                        key: process.env.TRELLO_APIKEY,
-                        token: process.env.TRELLO_APITOKEN
+                        key: process.env.TRELLO_API_KEY,
+                        token: process.env.TRELLO_API_TOKEN
                     })
                     .expect('Content-Type', /json/)
                     .expect(200);

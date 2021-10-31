@@ -32,8 +32,8 @@ app.get('/', async function (req, res) {
  * @see https://developer.atlassian.com/cloud/trello/rest/api-group-webhooks/#api-webhooks-post
  */
 app.get('/api/trello/webhooks/register', authApiKey, async function (req, res) {
-    const trelloApiKey = req.query.trelloApiKey || process.env.TRELLO_APIKEY;
-    const trelloApiToken = req.query.trelloApiToken || process.env.TRELLO_APITOKEN;
+    const trelloApiKey = req.query.trelloApiKey || process.env.TRELLO_API_KEY;
+    const trelloApiToken = req.query.trelloApiToken || process.env.TRELLO_API_TOKEN;
     const description = req.query.description;
     const idModel = req.query.idModel;
 
@@ -81,8 +81,8 @@ app.get('/api/trello/*', authApiKey, async function (req, res) {
     const params = Object.assign(
         {},
         {
-            key: process.env.TRELLO_APIKEY,
-            token: process.env.TRELLO_APITOKEN
+            key: process.env.TRELLO_API_KEY,
+            token: process.env.TRELLO_API_TOKEN
         },
         req.query
     );
