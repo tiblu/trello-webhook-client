@@ -8,6 +8,7 @@ logger.level = process.env.LOGGER_LEVEL || log4js.levels.DEBUG;
 
 const marked = require('marked');
 const fs = require('fs').promises;
+const os = require('os');
 
 app.use(express.json());
 
@@ -16,8 +17,10 @@ app.get('/', async function (req, res) {
     res.send(marked(file.toString()));
 });
 
-app.get('/api', async function (req, res) {
-    res.status(200).json({hello: 'world'});
+app.post('/api/trello/webhookCallback', async function (req, res) {
+    logger.debug(req.method, req.path, 'req.body', os.EOL + JSON.stringify(req.body, null, 2));
+
+    res.status(200).json({});
 });
 
 module.exports = app;
