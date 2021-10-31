@@ -90,8 +90,8 @@ app.get('/api/trello/*', authApiKey, async function (req, res) {
         return res
             .status(apiRes.status)
             .json({
-                code: res.status,
-                message: res.text
+                code: apiRes.status,
+                message: apiRes.text
             });
     }
 });
