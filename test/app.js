@@ -114,18 +114,24 @@ suite('App', function () {
             throw new Error('Implement!');
         });
 
-        test('Fail - invalid webhook id', async function () {
-            process.env.API_KEY = process.env.API_KEY || 'TEST_API_KEY';
-            process.env.TRELLO_API_KEY = process.env.TRELLO_API_KEY || 'TEST_TRELLO_API_KEY';
+        if (process.env.TRELLO_API_KEY) {
+            test('Fail - 400 - invalid webhook id', async function () {
+                process.env.API_KEY = process.env.API_KEY || 'TEST_API_KEY';
 
-            const resBody = (await trelloWebhooksDelete('irrelevant', {apiKey: process.env.API_KEY}, 400)).body;
-            const resBodyExpected = {
-                code: 400,
-                message: 'invalid id'
-            };
+                const resBody = (await trelloWebhooksDelete('irrelevant', {apiKey: process.env.API_KEY}, 400)).body;
+                const resBodyExpected = {
+                    code: 400,
+                    message: 'invalid id'
+                };
 
-            assert.deepEqual(resBody, resBodyExpected);
-        });
+                assert.deepEqual(resBody, resBodyExpected);
+            });
+        } else {
+            test.skip('Fail - invalid webhook id - SKIPPED: Test MUST have actual Trello API key set in the env TRELLO_API_KEY', async function () {
+                // Skipped as it requires actual Trello API key in the env TRELLO_API_KEY
+            });
+        }
+
 
         test('Fail - 50001 - invalid server configuration, no API_KEY set', async function () {
             delete process.env.API_KEY;
