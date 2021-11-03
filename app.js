@@ -83,7 +83,6 @@ app.get('/api/trello/webhooks/register', authApiKey, async function (req, res) {
  * @see https://developer.atlassian.com/cloud/trello/rest/api-group-webhooks/#api-webhooks-post
  */
 app.get('/api/trello/webhooks/delete/:id', authApiKey, async function (req, res) {
-    console.log('ASdasdasda');
     const trelloWebhookId = req.params.id;
 
     if (!trelloWebhookId) {
