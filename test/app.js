@@ -106,13 +106,19 @@ suite('App', function () {
 
     suite('GET /api/trello/webhooks/delete/:id', function () {
 
-        test('Success', async function () {
-            process.env.API_KEY = process.env.API_KEY || 'TEST_API_KEY';
-            process.env.TRELLO_API_KEY = process.env.TRELLO_API_KEY || 'TEST_TRELLO_API_KEY';
-            process.env.TRELLO_API_TOKEN = process.env.TRELLO_API_TOKEN || 'TRELLO_API_TOKEN';
+        if (process.env.TRELLO_API_KEY) {
+            test('Success', async function () {
+                process.env.API_KEY = process.env.API_KEY || 'TEST_API_KEY';
+                process.env.TRELLO_API_KEY = process.env.TRELLO_API_KEY || 'TEST_TRELLO_API_KEY';
+                process.env.TRELLO_API_TOKEN = process.env.TRELLO_API_TOKEN || 'TRELLO_API_TOKEN';
 
-            throw new Error('Implement!');
-        });
+                throw new Error('Implement!');
+            });
+        } else {
+            test.skip('Success - SKIPPED: Test MUST have actual Trello API key set in the env TRELLO_API_KEY', async function () {
+                // Skipped as it requires actual Trello API key in the env TRELLO_API_KEY
+            });
+        }
 
         if (process.env.TRELLO_API_KEY) {
             test('Fail - 400 - invalid webhook id', async function () {
