@@ -56,6 +56,7 @@ suite('App', function () {
             process.env.API_KEY = process.env.API_KEY || 'TEST_API_KEY';
             process.env.TRELLO_API_KEY = process.env.TRELLO_API_KEY || 'TEST_TRELLO_API_KEY';
             process.env.TRELLO_API_TOKEN = process.env.TRELLO_API_TOKEN || 'TRELLO_API_TOKEN';
+            process.env.APP_BASE_URL = process.env.APP_BASE_URL || 'APP_BASE_URL';
         });
 
         test('Success', async function () {

@@ -13,4 +13,4 @@ For this to run on Heroku, you need following environment variables to be set:
 
 * Trello REST API intro - https://developer.atlassian.com/cloud/trello/guides/rest-api/api-introduction/
 * Trello REST API docs - https://developer.atlassian.com/cloud/trello/rest/api-group-actions/
-
+* Trello REST API - checkListItem modification - https://developer.atlassian.com/cloud/trello/rest/api-group-cards/#api-cards-id-checkitem-idcheckitem-put

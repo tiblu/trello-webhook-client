@@ -1,5 +1,6 @@
 const http = require('http');
 const app = require('./app');
+const os = require('os');
 
 const log4js = require('log4js');
 const logger = log4js.getLogger();
@@ -23,4 +24,5 @@ app.set('trust proxy', trustProxy);
 
 const serverHttp = http.createServer(app).listen(port, host, function () {
     logger.debug(`Express HTTP server listening on port ${serverHttp.address().port}. Env: ${app.get('env')}. Host: ${host}. Trust proxy: ${trustProxy}.`);
+    logger.debug(`Process ENV`, os.EOL + JSON.stringify(process.env, null, 2))
 });

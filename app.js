@@ -32,16 +32,46 @@ app.get('/', async function (req, res) {
  * @see https://developer.atlassian.com/cloud/trello/rest/api-group-webhooks/#api-webhooks-post
  */
 app.get('/api/trello/webhooks/register', authApiKey, async function (req, res) {
-    const trelloApiKey = req.query.trelloApiKey || process.env.TRELLO_API_KEY;
-    const trelloApiToken = req.query.trelloApiToken || process.env.TRELLO_API_TOKEN;
-    const description = req.query.description;
-    const idModel = req.query.idModel;
+    const trelloApiKey = process.env.TRELLO_API_KEY;
+    const trelloApiToken = process.env.TRELLO_API_TOKEN;
+    const appBaseUrl = process.env.APP_BASE_URL;
 
-    if (!trelloApiKey || !trelloApiToken || !description || !idModel) {
+    if (!trelloApiKey || !trelloApiToken || !appBaseUrl) {
+        return res.internalServerError('Bad server configuration. Missing TRELLO_API_KEY and/or TRELLO_API_TOKEN and/or APP_BASE_URL', 1);
+    }
+
+    const description = req.query.description;
+    const idModel = req.query.idModel; // This can be the id of a member, card, board, or anything that actions apply to. Any event involving this model will trigger the webhook.
+
+    if (!description || !idModel) {
         return res.badRequest('Missing one or more required parameters. Required parameters are trelloApiKey, trelloApiToken, description, idModel.', 1);
     }
 
-    res.ok();
+    const path = `https://api.trello.com/1/tokens/${trelloApiToken}/webhooks/`;
+
+    const apiRes = await request
+        .post(path)
+        .send({
+            key: trelloApiKey,
+            description: description,
+            idModel: idModel,
+            callbackURL: `${appBaseUrl}/api/trello/webhooks/callback`
+        });
+
+    if (apiRes.status < 400) {
+        logger.debug('Trello API webhook registration succeeded', os.EOL + JSON.stringify(apiRes.body, null, 2));
+
+        return res.ok(apiRes.body);
+    } else {
+        logger.error('Trello API webhook registration failed', apiRes.status, apiRes.text);
+
+        return res
+            .status(apiRes.status)
+            .json({
+                code: apiRes.status,
+                message: apiRes.text
+            });
+    }
 });
 
 /**
