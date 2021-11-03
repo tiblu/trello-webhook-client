@@ -83,13 +83,31 @@ app.get('/api/trello/webhooks/register', authApiKey, async function (req, res) {
  * @see https://developer.atlassian.com/cloud/trello/rest/api-group-webhooks/#api-webhooks-post
  */
 app.get('/api/trello/webhooks/delete/:id', authApiKey, async function (req, res) {
+    console.log('ASdasdasda');
     const trelloWebhookId = req.params.id;
 
     if (!trelloWebhookId) {
         return res.badRequest('Missing one or more required parameters.', 1)
     }
 
-    res.ok();
+    const path = `${TRELLO_API_PREFIX}webhooks/${trelloWebhookId}`;
+
+    try { // Weird, superagent treats all non 200-s on DELETE as errors...
+        const apiRes = await request
+            .del(path)
+            .query({
+                key: process.env.TRELLO_API_KEY
+            });
+
+        return res.ok(apiRes.body);
+    } catch (err) {
+        return res
+            .status(err.status)
+            .json({
+                code: err.status,
+                message: err.response.text
+            });
+    }
 });
 
 /**

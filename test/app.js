@@ -16,12 +16,13 @@ const trelloWebhooksRegister = async function (params, expectedHttpCode) {
         .expect(expectedHttpCode);
 };
 
-const trelloWebhooksDelete = async function (trelloWebhookId, expectedHttpCode) {
+const trelloWebhooksDelete = async function (trelloWebhookId, params, expectedHttpCode) {
     const path = '/api/trello/webhooks/delete/:id'
         .replace(':id', trelloWebhookId);
 
     return request(app)
         .get(path)
+        .query(params)
         .expect('Content-Type', /json/)
         .expect(expectedHttpCode);
 };
@@ -105,20 +106,31 @@ suite('App', function () {
 
     suite('GET /api/trello/webhooks/delete/:id', function () {
 
-        setup(async function () {
+        test('Success', async function () {
             process.env.API_KEY = process.env.API_KEY || 'TEST_API_KEY';
             process.env.TRELLO_API_KEY = process.env.TRELLO_API_KEY || 'TEST_TRELLO_API_KEY';
             process.env.TRELLO_API_TOKEN = process.env.TRELLO_API_TOKEN || 'TRELLO_API_TOKEN';
+
+            throw new Error('Implement!');
         });
 
-        test('Success', async function () {
-            throw new Error('Implement');
+        test('Fail - invalid webhook id', async function () {
+            process.env.API_KEY = process.env.API_KEY || 'TEST_API_KEY';
+            process.env.TRELLO_API_KEY = process.env.TRELLO_API_KEY || 'TEST_TRELLO_API_KEY';
+
+            const resBody = (await trelloWebhooksDelete('irrelevant', {apiKey: process.env.API_KEY}, 400)).body;
+            const resBodyExpected = {
+                code: 400,
+                message: 'invalid id'
+            };
+
+            assert.deepEqual(resBody, resBodyExpected);
         });
 
         test('Fail - 50001 - invalid server configuration, no API_KEY set', async function () {
             delete process.env.API_KEY;
 
-            const resBody = (await trelloWebhooksDelete('irrelevant', 500)).body;
+            const resBody = (await trelloWebhooksDelete('irrelevant', {}, 500)).body;
             const resbodyExpected = {
                 status: {
                     code: 50001,
