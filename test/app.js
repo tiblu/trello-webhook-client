@@ -106,16 +106,13 @@ suite('App', function () {
 
     suite('GET /api/trello/webhooks/delete/:id', function () {
 
-        if (process.env.TRELLO_API_KEY) {
+        if (process.env.TRELLO_API_KEY && process.env.TRELLO_WEBHOOK_ID) {
             test('Success', async function () {
-                process.env.API_KEY = process.env.API_KEY || 'TEST_API_KEY';
-                process.env.TRELLO_API_KEY = process.env.TRELLO_API_KEY || 'TEST_TRELLO_API_KEY';
-                process.env.TRELLO_API_TOKEN = process.env.TRELLO_API_TOKEN || 'TRELLO_API_TOKEN';
-
-                throw new Error('Implement!');
+                const resBody = (await trelloWebhooksDelete(process.env.TRELLO_WEBHOOK_ID, {apiKey: process.env.API_KEY}, 200)).body;
+                // FIXME: add response body verification here!
             });
         } else {
-            test.skip('Success - SKIPPED: Test MUST have actual Trello API key set in the env TRELLO_API_KEY', async function () {
+            test.skip('Success - SKIPPED: Test MUST have actual Trello API key set in the env TRELLO_API_KEY and TRELLO_WEBHOOK_ID', async function () {
                 // Skipped as it requires actual Trello API key in the env TRELLO_API_KEY
             });
         }
