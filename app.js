@@ -83,8 +83,14 @@ app.get('/api/trello/webhooks/register', authApiKey, async function (req, res) {
  * @see https://developer.atlassian.com/cloud/trello/rest/api-group-webhooks/#api-webhooks-post
  */
 app.get('/api/trello/webhooks/delete/:id', authApiKey, async function (req, res) {
-    const trelloWebhookId = req.params.id;
+    const trelloApiKey = process.env.TRELLO_API_KEY;
+    const trelloApiToken = process.env.TRELLO_API_TOKEN;
 
+    if (!trelloApiKey || !trelloApiToken) {
+        return res.internalServerError('Bad server configuration. Missing TRELLO_API_KEY and/or TRELLO_API_TOKEN', 1);
+    }
+
+    const trelloWebhookId = req.params.id;
     if (!trelloWebhookId) {
         return res.badRequest('Missing one or more required parameters.', 1)
     }
@@ -95,7 +101,8 @@ app.get('/api/trello/webhooks/delete/:id', authApiKey, async function (req, res)
         const apiRes = await request
             .del(path)
             .query({
-                key: process.env.TRELLO_API_KEY
+                key: process.env.TRELLO_API_KEY,
+                token: process.env.TRELLO_API_TOKEN
             });
 
         return res.ok(apiRes.body);
@@ -115,7 +122,6 @@ app.get('/api/trello/webhooks/delete/:id', authApiKey, async function (req, res)
  * @see https://developer.atlassian.com/cloud/trello/guides/rest-api/webhooks/
  */
 app.post('/api/trello/webhooks/callback', async function (req, res) {
-    console.log('callback POST', req.method);
     logger.debug(req.method, req.path, 'req.body', os.EOL + JSON.stringify(req.body, null, 2));
 
     res.ok();

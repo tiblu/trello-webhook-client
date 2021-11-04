@@ -61,6 +61,22 @@ suite('App', function () {
         });
 
         test('Success', async function () {
+            // Sample response from successful registration
+            const resExpected = {
+                "status": {
+                    "code": 20000
+                },
+                "data": {
+                    "id": "7183261b3b10c115eb21affe",
+                    "description": "board_test_tibluou",
+                    "idModel": "6cc084478f8c0885b8c57ed1",
+                    "callbackURL": "https://yourdomain.com/api/trello/webhooks/callback",
+                    "active": true,
+                    "consecutiveFailures": 0,
+                    "firstConsecutiveFailDate": null
+                }
+            };
+
             throw new Error('Implement');
         });
 
@@ -173,7 +189,7 @@ suite('App', function () {
 
             assert.deepEqual(res.body, resExpected);
         });
-        
+
         test('Success - 200 - HEAD request', async function () {
             const res = await request(app)
                 .head('/api/trello/webhooks/callback')
