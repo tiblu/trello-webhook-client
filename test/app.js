@@ -63,13 +63,11 @@ suite('App', function () {
         test('Success', async function () {
             // Sample response from successful registration
             const resExpected = {
-                "status": {
-                    "code": 20000
-                },
+                "status": {"code": 20000},
                 "data": {
-                    "id": "7183261b3b10c115eb21affe",
+                    "id": "61832a8bde982e6cbdce1bb6",
                     "description": "board_test_tibluou",
-                    "idModel": "6cc084478f8c0885b8c57ed1",
+                    "idModel": "61832a1b1629a16f49be5819",
                     "callbackURL": "https://yourdomain.com/api/trello/webhooks/callback",
                     "active": true,
                     "consecutiveFailures": 0,
@@ -125,7 +123,10 @@ suite('App', function () {
         if (process.env.TRELLO_API_KEY && process.env.TRELLO_WEBHOOK_ID) {
             test('Success', async function () {
                 const resBody = (await trelloWebhooksDelete(process.env.TRELLO_WEBHOOK_ID, {apiKey: process.env.API_KEY}, 200)).body;
-                // FIXME: add response body verification here!
+                const resExpected = {
+                    "status": {"code": 20000},
+                    "data": {"_value": null}
+                };
             });
         } else {
             test.skip('Success - SKIPPED: Test MUST have actual Trello API key set in the env TRELLO_API_KEY and TRELLO_WEBHOOK_ID', async function () {
