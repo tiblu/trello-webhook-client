@@ -110,13 +110,26 @@ app.get('/api/trello/webhooks/delete/:id', authApiKey, async function (req, res)
 });
 
 /**
+ * Actual hard working callbackUrl
+ *
  * @see https://developer.atlassian.com/cloud/trello/guides/rest-api/webhooks/
  */
 app.post('/api/trello/webhooks/callback', async function (req, res) {
+    console.log('callback POST', req.method);
     logger.debug(req.method, req.path, 'req.body', os.EOL + JSON.stringify(req.body, null, 2));
 
     res.ok();
 });
+
+/**
+ * Upon registration of webhook, Trello calls HEAD on the callbackUrl
+ *
+ * @see https://developer.atlassian.com/cloud/trello/guides/rest-api/webhooks/
+ */
+app.head('/api/trello/webhooks/callback', async function (req, res) {
+    res.ok();
+});
+
 
 /**
  * Proxy all GET requests through to Trello API and return whatever they respond

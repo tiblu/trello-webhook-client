@@ -173,6 +173,12 @@ suite('App', function () {
 
             assert.deepEqual(res.body, resExpected);
         });
+        
+        test('Success - 200 - HEAD request', async function () {
+            const res = await request(app)
+                .head('/api/trello/webhooks/callback')
+                .expect(200);
+        });
 
     });
 
