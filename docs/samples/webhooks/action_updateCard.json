@@ -1,0 +1,112 @@
+{
+  "model": {
+    "id": "61832a1b1629a16f49be5819",
+    "name": "__TESTING_BOARD",
+    "desc": "",
+    "descData": null,
+    "closed": false,
+    "idOrganization": "57c4518b40a6533d259fcb04",
+    "idEnterprise": null,
+    "pinned": false,
+    "url": "https://trello.com/b/hMOGAuTE/testingboard",
+    "shortUrl": "https://trello.com/b/hMOGAuTE",
+    "prefs": {
+      "permissionLevel": "org",
+      "hideVotes": false,
+      "voting": "disabled",
+      "comments": "members",
+      "invitations": "members",
+      "selfJoin": true,
+      "cardCovers": true,
+      "isTemplate": false,
+      "cardAging": "regular",
+      "calendarFeedEnabled": false,
+      "isPluginHeaderShortcutsEnabled": false,
+      "enabledPluginBoardButtons": [],
+      "background": "pink",
+      "backgroundImage": null,
+      "backgroundImageScaled": null,
+      "backgroundTile": false,
+      "backgroundBrightness": "dark",
+      "backgroundColor": "#CD5A91",
+      "backgroundBottomColor": "#CD5A91",
+      "backgroundTopColor": "#CD5A91",
+      "canBePublic": true,
+      "canBeEnterprise": true,
+      "canBeOrg": true,
+      "canBePrivate": true,
+      "canInvite": true
+    },
+    "labelNames": {
+      "green": "",
+      "yellow": "",
+      "orange": "",
+      "red": "",
+      "purple": "",
+      "blue": "",
+      "sky": "",
+      "lime": "",
+      "pink": "",
+      "black": ""
+    }
+  },
+  "action": {
+    "id": "61832d81c612566af7f4e8f4",
+    "idMemberCreator": "54f6dc6fba33cbe0c83ab7ba",
+    "data": {
+      "card": {
+        "desc": "test description update",
+        "id": "61832d22373458120565858d",
+        "name": "NEW CARD",
+        "idShort": 2,
+        "shortLink": "b9b91mH0"
+      },
+      "old": {
+        "desc": ""
+      },
+      "board": {
+        "id": "61832a1b1629a16f49be5819",
+        "name": "__TESTING_BOARD",
+        "shortLink": "hMOGAuTE"
+      },
+      "list": {
+        "id": "61832b559b19a7872c9b0774",
+        "name": "NEW LIST"
+      }
+    },
+    "type": "updateCard",
+    "date": "2021-11-04T00:46:57.550Z",
+    "appCreator": null,
+    "limits": {},
+    "display": {
+      "translationKey": "action_changed_description_of_card",
+      "entities": {
+        "card": {
+          "type": "card",
+          "desc": "test description update",
+          "id": "61832d22373458120565858d",
+          "shortLink": "b9b91mH0",
+          "text": "NEW CARD"
+        },
+        "memberCreator": {
+          "type": "member",
+          "id": "54f6dc6fba33cbe0c83ab7ba",
+          "username": "batzorro",
+          "text": "Bat Zorro"
+        }
+      }
+    },
+    "memberCreator": {
+      "id": "54f6dc6fba33cbe0c83ab7ba",
+      "activityBlocked": false,
+      "avatarHash": "c92801980a58532db79367ef7cfb7bda",
+      "avatarUrl": "https://trello-members.s3.amazonaws.com/54f6dc6fba33cbe0c83ab7ba/c92801980a58532db79367ef7cfb7bda",
+      "fullName": "tiblu",
+      "idMemberReferrer": null,
+      "initials": "T",
+      "nonPublic": {},
+      "nonPublicAvailable": true,
+      "username": "batzorro"
+    }
+  }
+}
