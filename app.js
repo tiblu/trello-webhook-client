@@ -148,7 +148,7 @@ app.post('/api/trello/webhooks/callback', async function (req, res) {
                     // NOTE: Interesting API - POST request but expects all data in query parameters.
                     await request
                         .post(`${TRELLO_API_PREFIX}checklists/${TRELLO_MASTER_CHECKLIST_ID}/checkItems`)
-                        .params({
+                        .query({
                             key: TRELLO_API_KEY,
                             token: TRELLO_API_TOKEN,
                             name: `${checkItem.name} (Card: https://trello.com/c/${card.shortLink})`,
