@@ -17,6 +17,8 @@ app.use(require('./libs/middleware/response'));
 const authApiKey = require('./libs/middleware/authApiKey');
 
 const TRELLO_API_PREFIX = 'https://api.trello.com/1/';
+const TRELLO_API_KEY = process.env.TRELLO_API_KEY;
+const TRELLO_API_TOKEN = process.env.TRELLO_API_TOKEN;
 
 app.get('/', async function (req, res) {
     const file = await fs.readFile(`${__dirname}/README.md`, 'utf8');
@@ -126,6 +128,38 @@ app.get('/api/trello/webhooks/delete/:id', authApiKey, async function (req, res)
 // FIXME: VALIDATE REQUEST SIGNATURE! https://developer.atlassian.com/cloud/trello/guides/rest-api/webhooks/#webhook-signatures
 app.post('/api/trello/webhooks/callback', async function (req, res) {
     logger.debug(req.method, req.path, 'req.body', os.EOL + JSON.stringify(req.body, null, 2));
+    const TRELLO_MASTER_CHECKLIST_ID = process.env.TRELLO_MASTER_CHECKLIST_ID;
+    const TRELLO_SUB_CHECKLIST_CARD_NAME = process.env.TRELLO_SUB_CHECKLIST_CARD_NAME;
+
+    const action = req.body.action;
+
+    switch (action.type) {
+        case 'createCheckItem':
+            if (!TRELLO_MASTER_CHECKLIST_ID || !TRELLO_SUB_CHECKLIST_CARD_NAME) {
+                logger.error(`IGNORE ACTION ${action.type}! Missing required server environment configuration - TRELLO_MASTER_CHECKLIST_ID and/or TRELLO_SUB_CHECKLIST_CARD_NAME.`);
+                break;
+            }
+            if (action.data.checklist.id !== TRELLO_MASTER_CHECKLIST_ID) {
+                if (action.data.checklist.name.toLowerCase() === TRELLO_SUB_CHECKLIST_CARD_NAME.toLowerCase()) {
+                    const card = action.data.card;
+                    const checkItem = action.data.checkItem;
+
+                    // Create a checkItem - https://developer.atlassian.com/cloud/trello/rest/api-group-checklists/#api-checklists-id-checkitems-post
+                    // NOTE: Interesting API - POST request but expects all data in query parameters.
+                    await request
+                        .post(`${TRELLO_API_PREFIX}checklists/${TRELLO_MASTER_CHECKLIST_ID}/checkItems`)
+                        .params({
+                            key: TRELLO_API_KEY,
+                            token: TRELLO_API_TOKEN,
+                            name: `${checkItem.name} (Card: https://trello.com/c/${card.shortLink})`,
+                            checked: false
+                        });
+                }
+            }
+            break;
+        default:
+            logger.debug(`Ignoring message of with action type ${action.type}`);
+    }
 
     res.ok();
 });
