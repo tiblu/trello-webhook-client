@@ -120,6 +120,7 @@ app.get('/api/trello/webhooks/delete/:id', authApiKey, async function (req, res)
  * Actual hard working callbackUrl
  *
  * @see https://developer.atlassian.com/cloud/trello/guides/rest-api/webhooks/
+ * @see https://docs.google.com/spreadsheets/d/1opvJZ2yqfWgVr5ol1NXkvhn7Y4RKon2xPhemMbQprwA/edit#gid=0 - action types
  */
 
 // FIXME: VALIDATE REQUEST SIGNATURE! https://developer.atlassian.com/cloud/trello/guides/rest-api/webhooks/#webhook-signatures
