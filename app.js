@@ -151,7 +151,7 @@ app.post('/api/trello/webhooks/callback', async function (req, res) {
                         .query({
                             key: TRELLO_API_KEY,
                             token: TRELLO_API_TOKEN,
-                            name: `${checkItem.name} (Card: [https://trello.com/c/${card.shortLink}](${card.name}))`,
+                            name: `${checkItem.name} (Card: ${card.name} - https://trello.com/c/${card.shortLink})`,
                             checked: false,
                             pos: 'top'
                         });
