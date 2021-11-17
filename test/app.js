@@ -68,7 +68,7 @@ suite('App', function () {
                     "id": "61832a8bde982e6cbdce1bb6",
                     "description": "board_test_tibluou",
                     "idModel": "61832a1b1629a16f49be5819",
-                    "callbackURL": "https://yourdomain.com/api/trello/webhooks/callback",
+                    "callbackURL": "https://yourdomain.com/api/trello/webhooks/debug",
                     "active": true,
                     "consecutiveFailures": 0,
                     "firstConsecutiveFailDate": null
@@ -172,11 +172,11 @@ suite('App', function () {
     /**
      * @see https://developer.atlassian.com/cloud/trello/guides/rest-api/webhooks/
      */
-    suite('POST /api/trello/webhooks/callback', async function () {
+    suite('POST /api/trello/webhooks/debug', async function () {
 
         test('Success - 200', async function () {
             const res = await request(app)
-                .post('/api/trello/webhooks/callback')
+                .post('/api/trello/webhooks/debug')
                 .send({name: 'tiblu'})
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
@@ -193,7 +193,37 @@ suite('App', function () {
 
         test('Success - 200 - HEAD request', async function () {
             const res = await request(app)
-                .head('/api/trello/webhooks/callback')
+                .head('/api/trello/webhooks/debug')
+                .expect(200);
+        });
+
+    });
+
+    /**
+     * @see https://developer.atlassian.com/cloud/trello/guides/rest-api/webhooks/
+     */
+    suite('POST /api/trello/webhooks/masterlist', async function () {
+
+        test('Success - 200', async function () {
+            const res = await request(app)
+                .post('/api/trello/webhooks/masterlist')
+                .send({name: 'tiblu'})
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(200);
+
+            const resExpected = {
+                status: {
+                    code: 20000
+                }
+            };
+
+            assert.deepEqual(res.body, resExpected);
+        });
+
+        test('Success - 200 - HEAD request', async function () {
+            const res = await request(app)
+                .head('/api/trello/webhooks/masterlist')
                 .expect(200);
         });
 

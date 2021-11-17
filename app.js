@@ -119,14 +119,32 @@ app.get('/api/trello/webhooks/delete/:id', authApiKey, async function (req, res)
 });
 
 /**
- * Actual hard working callbackUrl
+ * Webhook callback endpoint to dump and debug messages sent by Trello
  *
  * @see https://developer.atlassian.com/cloud/trello/guides/rest-api/webhooks/
  * @see https://docs.google.com/spreadsheets/d/1opvJZ2yqfWgVr5ol1NXkvhn7Y4RKon2xPhemMbQprwA/edit#gid=0 - action types
  */
 
 // FIXME: VALIDATE REQUEST SIGNATURE! https://developer.atlassian.com/cloud/trello/guides/rest-api/webhooks/#webhook-signatures
-app.post('/api/trello/webhooks/callback', async function (req, res) {
+app.post('/api/trello/webhooks/debug', async function (req, res) {
+    logger.info(req.method, req.path, 'req.body', os.EOL + JSON.stringify(req.body, null, 2));
+
+    res.ok();
+});
+
+/**
+ * Upon registration of webhook, Trello calls HEAD on the callbackUrl
+ *
+ * @see https://developer.atlassian.com/cloud/trello/guides/rest-api/webhooks/
+ */
+app.head('/api/trello/webhooks/debug', async function (req, res) {
+    logger.info(req.method, req.path, 'req.body', req.body);
+
+    res.ok();
+});
+
+// FIXME: VALIDATE REQUEST SIGNATURE! https://developer.atlassian.com/cloud/trello/guides/rest-api/webhooks/#webhook-signatures
+app.post('/api/trello/webhooks/masterlist', async function (req, res) {
     logger.debug(req.method, req.path, 'req.body', os.EOL + JSON.stringify(req.body, null, 2));
     const TRELLO_MASTER_CHECKLIST_ID = process.env.TRELLO_MASTER_CHECKLIST_ID;
     const TRELLO_SUB_CHECKLIST_CARD_NAME = process.env.TRELLO_SUB_CHECKLIST_CARD_NAME;
@@ -170,10 +188,11 @@ app.post('/api/trello/webhooks/callback', async function (req, res) {
  *
  * @see https://developer.atlassian.com/cloud/trello/guides/rest-api/webhooks/
  */
-app.head('/api/trello/webhooks/callback', async function (req, res) {
+app.head('/api/trello/webhooks/masterlist', async function (req, res) {
+    logger.debug(req.method, req.path, 'req.body', req.body);
+
     res.ok();
 });
-
 
 /**
  * Proxy all GET requests through to Trello API and return whatever they respond

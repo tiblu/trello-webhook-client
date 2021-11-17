@@ -2,6 +2,12 @@
 
 Basic Trello webhook client to dump Trello webhook requests.
 
+App contains following callback endpoints for Trello webhooks:
+
+* `POST /api/trello/webhooks/masterlist` - Master list. Used for creating a master list of all lists on different cards identified by list name. Example use: You want master shopping list from all "Shopping"
+ checklists from different cards.
+* `POST /api/trello/webhooks/debug` - Debug. Logs all incoming messages.
+
 ## Deploying to Heroku
 
 For this to run on Heroku, you need following environment variables to be set:
