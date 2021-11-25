@@ -156,18 +156,18 @@ app.post('/api/trello/webhooks/masterlist', async function (req, res) {
     logger.debug(req.method, req.path, 'req.body', os.EOL + JSON.stringify(req.body, null, 2));
 
     const TRELLO_MASTER_CHECKLIST_ID = process.env.TRELLO_MASTER_CHECKLIST_ID;
-    const TRELLO_SUB_CHECKLIST_CARD_NAME = process.env.TRELLO_SUB_CHECKLIST_CARD_NAME;
+    const TRELLO_CHECKLIST_NAME = process.env.TRELLO_CHECKLIST_NAME;
 
     const action = req.body.action;
 
     switch (action.type) {
         case 'createCheckItem':
-            if (!TRELLO_MASTER_CHECKLIST_ID || !TRELLO_SUB_CHECKLIST_CARD_NAME) {
-                logger.error(`IGNORE ACTION ${action.type}! Missing required server environment configuration - TRELLO_MASTER_CHECKLIST_ID and/or TRELLO_SUB_CHECKLIST_CARD_NAME.`);
+            if (!TRELLO_MASTER_CHECKLIST_ID || !TRELLO_CHECKLIST_NAME) {
+                logger.error(`IGNORE ACTION ${action.type}! Missing required server environment configuration - TRELLO_MASTER_CHECKLIST_ID and/or TRELLO_CHECKLIST_NAME.`);
                 break;
             }
             if (action.data.checklist.id !== TRELLO_MASTER_CHECKLIST_ID) {
-                if (action.data.checklist.name.toLowerCase() === TRELLO_SUB_CHECKLIST_CARD_NAME.toLowerCase()) {
+                if (action.data.checklist.name.toLowerCase() === TRELLO_CHECKLIST_NAME.toLowerCase()) {
                     const card = action.data.card;
                     const checkItem = action.data.checkItem;
 
@@ -185,9 +185,31 @@ app.post('/api/trello/webhooks/masterlist', async function (req, res) {
                 }
             }
             break;
+        case 'updateCheckItem':
+            // CASES
+            // 1. MASTER LIST CHECK ITEM UPDATE - check sub list name, IF they match (substract reference to child card from the end), IGNORE to avoid endless loop.
+            // 2. SUB LIST CHECK ITEM UPDATE - check if master check-item matches (newname + the link to the subitem).
+            break;
+        case 'deleteCheckItem':
+            // CASES
+            // 1. MASTER LIST CHECK ITEM DELETE - delete from sub card by looking at card "shortLink" in the item AND find list named TRELLO_CHECKLIST_NAME. IF does not exist, ignore.
+            // 2. SUB LIST CHECK ITEM DELETE - delete from master card by looking checklist.name.startsWith('checkitem'). IF not found, ignore.
+            break;
         case 'updateCheckItemStateOnCard': // check and uncheck an item - change state incomplete/complete
-            // 2 way sync - keep check/uncheck states in sync with master and child.
+            // CASES
+            // 1. MASTER LIST CHECK ITEM IS CHECKED / UNCHECKED - if sub list item is already checked, ignore message. Trick is that we do not want infinite loop.
+            // 2. SUB LIST CHECK ITEM IS CHECKED / UNCHECKED -if master list item is already checked, ignore message. Trick is we do not want infinite loop.
             logger.error('IMPLEMENT!', action.type);
+            break;
+        case 'removeChecklistFromCard': // whole list is deleted. We can ignore that on MASTER, we only need to check for child lists.
+            // 1. MASTER CARD LIST DELETE - IGNORE MESSAGE
+            if (action.data.card.id === TRELLO_MASTER_CHECKLIST_ID) {
+                logger.warn('MASTER CHECKLIST WAS DELETED!', TRELLO_MASTER_CHECKLIST_ID);
+                return;
+            }
+
+            // 2. SUB CARD LIST DELETE - IF matches the LIST NAME DELETE ALL checkItems that reference this card from MASTER LIST. That is, delete all checkitems that reference this cards "shortLink".
+
             break;
         default:
             logger.debug(`Ignoring message of with action type ${action.type}`);
