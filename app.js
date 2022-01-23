@@ -57,7 +57,7 @@ app.get('/api/trello/webhooks/register', authApiKey, async function (req, res) {
             key: trelloApiKey,
             description: description,
             idModel: idModel,
-            callbackURL: `${appBaseUrl}/api/trello/webhooks/callback`
+            callbackURL: `${appBaseUrl}/api/trello/webhooks/masterlist`
         });
 
     if (apiRes.status < 400) {
