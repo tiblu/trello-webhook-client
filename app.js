@@ -217,14 +217,14 @@ app.post('/api/trello/webhooks/masterlist', async function (req, res) {
 
             // 2. SUB CARD LIST DELETE - IF matches the LIST NAME DELETE ALL checkItems that reference this card from MASTER LIST. That is, delete all checkitems that reference this cards "shortLink".
             // GET checkitems on a checklist (master) - https://developer.atlassian.com/cloud/trello/rest/api-group-checklists/#api-checklists-id-checkitems-get
-            const checkItemsOnMaster = await request
+            const checkItemsOnMaster = (await request
                 .get(`${TRELLO_API_PREFIX}checklists/${TRELLO_MASTER_CHECKLIST_ID}/checkItems`)
                 .query({
                     key: TRELLO_API_KEY,
                     token: TRELLO_API_TOKEN
-                });
+                })).body;
 
-            logger.info('MASTER ITEMS', JSON.stringify(checkItemsOnMaster.body, null, 2));
+            logger.info('MASTER ITEMS', JSON.stringify(checkItemsOnMaster, null, 2));
 
             const checkItemsToDelete = checkItemsOnMaster.filter((checkItem) => {
                 let checkItemNameRegex = new RegExp(`.*|${checklist.id}|${checkItem.id}\\)`);
