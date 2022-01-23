@@ -224,8 +224,6 @@ app.post('/api/trello/webhooks/masterlist', async function (req, res) {
                     token: TRELLO_API_TOKEN
                 })).body;
 
-            logger.info('MASTER ITEMS', JSON.stringify(checkItemsOnMaster, null, 2));
-
             for (let i = 0; i < checkItemsOnMaster.length; i++) {
                 const checkItem = checkItemsOnMaster[i];
                 const checkItemNameRegex = new RegExp(`.*\\|${checklist.id}\\|.*`, 'i');
