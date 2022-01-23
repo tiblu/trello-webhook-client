@@ -227,8 +227,9 @@ app.post('/api/trello/webhooks/masterlist', async function (req, res) {
             logger.info('MASTER ITEMS', JSON.stringify(checkItemsOnMaster, null, 2));
 
             const checkItemsToDelete = checkItemsOnMaster.filter((checkItem) => {
-                let checkItemNameRegex = new RegExp(`.*|${checklist.id}|${checkItem.id}\\)`, 'i');
-                return checkItem.name.match(checkItemNameRegex);
+                const checkItemNameRegex = new RegExp(`.*|${checklist.id}|${checkItem.id}\\)`, 'i');
+                const matchResult = checkItem.name.match(checkItemNameRegex);
+                return matchResult && matchResult.length;
             });
 
             logger.info('MASTER ITEMS TO DELETE', JSON.stringify(checkItemsToDelete, null, 2));
