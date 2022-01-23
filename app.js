@@ -226,14 +226,23 @@ app.post('/api/trello/webhooks/masterlist', async function (req, res) {
 
             logger.info('MASTER ITEMS', JSON.stringify(checkItemsOnMaster, null, 2));
 
-            const checkItemsToDelete = checkItemsOnMaster.filter((checkItem) => {
+            for (let i = 0; i < checkItemsOnMaster.length; i++) {
+                const checkItem = checkItemsOnMaster[i];
                 const checkItemNameRegex = new RegExp(`.*\\|${checklist.id}\\|.*`, 'i');
                 const matches = checkItem.name.match(checkItemNameRegex);
-                logger.info('MATCHING', checkItem.name, checkItemNameRegex, matches);
-                return matches && matches.length;
-            });
-
-            logger.info('MASTER ITEMS TO DELETE', JSON.stringify(checkItemsToDelete, null, 2));
+                if (matches && matches.length) {
+                    try {
+                        await request
+                            .delete(`${TRELLO_API_PREFIX}checklists/${TRELLO_MASTER_CHECKLIST_ID}/checkItems/${checkItem.id}`)
+                            .query({
+                                key: TRELLO_API_KEY,
+                                token: TRELLO_API_TOKEN
+                            });
+                    } catch (err) {
+                        logger.error('Failed to delete a checklist item from master list', checkItem, err);
+                    }
+                }
+            }
 
             break;
         default:
