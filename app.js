@@ -180,10 +180,9 @@ app.post('/api/trello/webhooks/masterlist', async function (req, res) {
                         .query({
                             key: TRELLO_API_KEY,
                             token: TRELLO_API_TOKEN,
-                            name: `${checkItem.name} - https://trello.com/c/${card.shortLink} \`(src: ${card.id}/${checklist.id}/${checkItem.id})\``,
+                            name: `${checkItem.name} - https://trello.com/c/${card.shortLink} \`(src: ${card.id}|${checklist.id}|${checkItem.id})\``,
                             checked: false,
-                            pos: 'top',
-                            foobar: 'YOLOrandomstuff'
+                            pos: 'top'
                         });
                 } else {
                     logger.warn(`IGNORE ACTION ${action.type}! Checklist name mismatch!`);
