@@ -206,13 +206,20 @@ app.post('/api/trello/webhooks/masterlist', async function (req, res) {
             logger.error('IMPLEMENT!', action.type);
             break;
         case 'removeChecklistFromCard': // whole list is deleted. We can ignore that on MASTER, we only need to check for child lists.
+            const card = action.data.card;
+            const checklist = action.data.checklist;
+
             // 1. MASTER CARD LIST DELETE - IGNORE MESSAGE
-            if (action.data.card.id === TRELLO_MASTER_CHECKLIST_ID) {
+            if (card.id === TRELLO_MASTER_CHECKLIST_ID) {
                 logger.warn('MASTER CHECKLIST WAS DELETED!', TRELLO_MASTER_CHECKLIST_ID);
                 return;
             }
 
             // 2. SUB CARD LIST DELETE - IF matches the LIST NAME DELETE ALL checkItems that reference this card from MASTER LIST. That is, delete all checkitems that reference this cards "shortLink".
+            // GET checkitems on a checklist (master) - https://developer.atlassian.com/cloud/trello/rest/api-group-checklists/#api-checklists-id-checkitems-get
+            const checkItemsOnMaster = await request
+                .get(`${TRELLO_API_PREFIX}checklists/${TRELLO_MASTER_CHECKLIST_ID}/checkItems`);
+            logger.info('MATER ITEMS', JSON.stringify(checkItemsOnMaster.body, null, 2));
 
             break;
         default:
