@@ -166,9 +166,11 @@ app.post('/api/trello/webhooks/masterlist', async function (req, res) {
                 logger.error(`IGNORE ACTION ${action.type}! Missing required server environment configuration - TRELLO_MASTER_CHECKLIST_ID and/or TRELLO_CHECKLIST_NAME.`);
                 break;
             }
+            // Avoid infinite loop - script creates a checklist item in the master list and triggers this again
             if (action.data.checklist.id !== TRELLO_MASTER_CHECKLIST_ID) {
                 if (action.data.checklist.name.toLowerCase() === TRELLO_CHECKLIST_NAME.toLowerCase()) {
                     const card = action.data.card;
+                    const checklist = action.data.checklist;
                     const checkItem = action.data.checkItem;
 
                     // Create a checkItem - https://developer.atlassian.com/cloud/trello/rest/api-group-checklists/#api-checklists-id-checkitems-post
@@ -178,7 +180,7 @@ app.post('/api/trello/webhooks/masterlist', async function (req, res) {
                         .query({
                             key: TRELLO_API_KEY,
                             token: TRELLO_API_TOKEN,
-                            name: `${checkItem.name} [https://trello.com/c/${card.shortLink}]`,
+                            name: `${checkItem.name} - https://trello.com/c/${card.shortLink} (src: ${card.id}/${checklist.id}/${checkItem.id})`,
                             checked: false,
                             pos: 'top'
                         });
@@ -227,6 +229,12 @@ app.head('/api/trello/webhooks/masterlist', async function (req, res) {
     logger.debug(req.method, req.path, 'req.body', req.body);
 
     res.ok();
+});
+
+app.get('/api/trello/boards/:boardId/masterlist/:listName', authApiKey, async function (req, res) {
+    const boardId = req.boardId;
+    const listName = req.listName;
+
 });
 
 /**
